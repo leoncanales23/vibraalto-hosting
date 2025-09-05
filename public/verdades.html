@@ -1,6 +1,55 @@
 <!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
-<title>Verdades</title>
-<h1>Verdades</h1>
-<p>Contenido en construcción.</p>
-<p><a href="/">Volver</a></p>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verdades – VIBRAALTO</title>
+<link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="altar">
+  <div id="particulas-reactivas"></div>
+  <main class="panel">
+    <h2>¿Qué verdad llevas tanto tiempo callando?</h2>
+    <textarea id="confText" maxlength="800" placeholder="Libera tu verdad..."></textarea>
+    <button id="sendBtn">Liberar mi verdad</button>
+    <p id="status" class="msg"></p>
+    <p><a href="/">Volver</a></p>
+  </main>
+
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-PBjiR6uJtXgO0JZnSc78Aqy4yUK__g8",
+      authDomain: "vibraaltoai-11f55.firebaseapp.com",
+      projectId: "vibraaltoai-11f55",
+      storageBucket: "vibraaltoai-11f55.firebasestorage.app",
+      messagingSenderId: "852702111467",
+      appId: "1:852702111467:web:7b036fdec341e3702740ae"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const input = document.getElementById('confText');
+    const btn = document.getElementById('sendBtn');
+    const statusEl = document.getElementById('status');
+    btn.addEventListener('click', async () => {
+      const texto = (input.value || '').trim();
+      if (!texto) { statusEl.textContent = 'Escribe algo primero.'; return; }
+      if (texto.length > 800) { statusEl.textContent = 'Máximo 800 caracteres.'; return; }
+      btn.disabled = true; statusEl.textContent = 'Enviando...';
+      try {
+        await db.collection('confesiones').add({
+          texto,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        input.value = ''; statusEl.textContent = 'Tu verdad fue liberada.';
+      } catch(e){
+        statusEl.textContent = 'Error al enviar. Intenta de nuevo.';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
