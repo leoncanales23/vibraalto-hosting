@@ -1,13 +1,42 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Muro de Verdades – VIBRAALTO</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Muro de Verdades – VIBRAALTO</title>
+<link rel="stylesheet" href="/assets/css/styles.css">
 </head>
-<body>
-  <h2>Muro de Verdades</h2>
-  <p>Contenido en construcción.</p>
-  <p><a href="/">Volver</a></p>
+<body class="altar">
+  <div id="particulas-reactivas"></div>
+  <main class="muro">
+    <h2>Muro de Verdades</h2>
+    <ul id="listado" class="cards"></ul>
+    <p><a href="/">Volver</a></p>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-PBjiR6uJtXgO0JZnSc78Aqy4yUK__g8",
+      authDomain: "vibraaltoai-11f55.firebaseapp.com",
+      projectId: "vibraaltoai-11f55"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const ul = document.getElementById('listado');
+    db.collection('confesiones')
+      .orderBy('timestamp','desc').limit(50)
+      .onSnapshot(snap=>{
+        ul.innerHTML = '';
+        snap.forEach(doc=>{
+          const { texto } = doc.data();
+          const li = document.createElement('li');
+          li.className = 'card';
+          li.textContent = texto || '—';
+          ul.appendChild(li);
+        });
+      });
+  </script>
 </body>
 </html>
